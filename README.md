@@ -1,6 +1,6 @@
 # web-fetch-mcp-salesforce-atlas-addon
 
-A fetch-strategy plugin for [web-fetch-mcp](../web-fetch-mcp). It teaches the generic fetcher how to read **Salesforce Atlas documentation** (`developer.salesforce.com/docs/atlas.*.meta/...`).
+A fetch-strategy plugin for [web-fetch-mcp](https://github.com/parsam97/web-fetch-mcp). It teaches the generic fetcher how to read **Salesforce Atlas documentation** (`developer.salesforce.com/docs/atlas.*.meta/...`).
 
 ## Why this exists
 
