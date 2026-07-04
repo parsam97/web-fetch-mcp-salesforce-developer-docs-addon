@@ -1,7 +1,7 @@
 {
-  "name": "web-fetch-mcp-salesforce-atlas-addon",
+  "name": "web-fetch-mcp-salesforce-developer-docs-addon",
   "version": "0.1.0",
-  "description": "Salesforce Atlas docs fetch handler for web-fetch-mcp (loaded via FETCH_PLUGINS).",
+  "description": "developer.salesforce.com docs fetch handlers for web-fetch-mcp (loaded via FETCH_PLUGINS).",
   "type": "module",
   "main": "dist/index.js",
   "exports": "./dist/index.js",
