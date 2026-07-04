@@ -1,4 +1,5 @@
 import { isAtlasDocUrl, fetchAtlasDoc } from "./atlas.js";
+import { isModernDocUrl, fetchModernDoc } from "./markdown-docs.js";
 
 export interface Handler {
   name: string;
@@ -7,6 +8,11 @@ export interface Handler {
 }
 
 export const handlers: Handler[] = [
+  {
+    name: "salesforce-docs-markdown",
+    matches: isModernDocUrl,
+    fetch: fetchModernDoc,
+  },
   {
     name: "salesforce-atlas-docs",
     matches: isAtlasDocUrl,

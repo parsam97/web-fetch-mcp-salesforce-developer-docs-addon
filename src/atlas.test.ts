@@ -10,7 +10,7 @@ describe("isAtlasDocUrl", () => {
     ).toBe(true);
   });
 
-  it("rejects non-Atlas developer.salesforce.com docs (Jina handles those)", () => {
+  it("rejects non-Atlas developer.salesforce.com docs (markdown handler covers those)", () => {
     expect(
       isAtlasDocUrl(
         "https://developer.salesforce.com/docs/platform/named-credentials/guide/get-started.html"

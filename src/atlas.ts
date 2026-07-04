@@ -1,7 +1,7 @@
 import TurndownService from "turndown";
+import { fetchWithTimeout, withRetry } from "./http.js";
 
 const DOCS_BASE = "https://developer.salesforce.com/docs";
-const FETCH_TIMEOUT_MS = 30_000;
 
 const turndown = new TurndownService({
   headingStyle: "atx",
@@ -26,48 +26,12 @@ function parseAtlasUrl(url: string): { meta: string; contentFile: string } {
   return { meta: segments[1], contentFile: segments[segments.length - 1] };
 }
 
-function isRetryable(err: unknown): boolean {
-  if (!(err instanceof Error)) return false;
-  if (err.name === "AbortError" || err.message.includes("fetch failed")) return true;
-  const match = err.message.match(/HTTP (\d+)/);
-  if (match) {
-    const status = parseInt(match[1], 10);
-    return status === 429 || status >= 500;
-  }
-  return false;
-}
-
-async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
-  let delay = 1000;
-  let lastError: unknown;
-  for (let i = 1; i <= attempts; i++) {
-    try {
-      return await fn();
-    } catch (err) {
-      lastError = err;
-      if (i === attempts || !isRetryable(err)) throw err;
-      await new Promise((resolve) => setTimeout(resolve, delay));
-      delay *= 2;
-    }
-  }
-  throw lastError;
-}
-
 async function fetchJson(url: string): Promise<any> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const response = await fetch(url, {
-      headers: { Accept: "application/json" },
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText} (${url})`);
-    }
-    return await response.json();
-  } finally {
-    clearTimeout(timeout);
+  const response = await fetchWithTimeout(url, { Accept: "application/json" });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText} (${url})`);
   }
+  return response.json();
 }
 
 export async function fetchAtlasDoc(url: string): Promise<{ content: string }> {
