@@ -1,5 +1,18 @@
 const FETCH_TIMEOUT_MS = 30_000;
 
+const BROWSER_HEADERS: Record<string, string> = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Sec-Fetch-Dest": "document",
+  "Sec-Fetch-Mode": "navigate",
+  "Sec-Fetch-Site": "none",
+  "sec-ch-ua": '"Chromium";v="126", "Not.A/Brand";v="8"',
+  "sec-ch-ua-mobile": "?0",
+  "sec-ch-ua-platform": '"Windows"',
+};
+
 function isRetryable(err: unknown): boolean {
   if (!(err instanceof Error)) return false;
   if (err.name === "AbortError" || err.message.includes("fetch failed")) return true;
@@ -34,7 +47,10 @@ export async function fetchWithTimeout(
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
-    return await fetch(url, { headers, signal: controller.signal });
+    return await fetch(url, {
+      headers: { ...BROWSER_HEADERS, ...headers },
+      signal: controller.signal,
+    });
   } finally {
     clearTimeout(timeout);
   }
